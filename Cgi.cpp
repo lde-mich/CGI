@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 17:12:32 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:15:26 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,9 @@ int Cgi::exeScript(std::string path)
     
 	std::string fileExtension = getFileExtension(path);
 	
+	//nullptr
+	const char* args[] = {path.c_str(), NULL};
+	
 	//mettere i permessi per eseguire i file 
 	int result = chmod(path.c_str(), S_IRWXU);
     if (result != 0)
@@ -67,7 +70,9 @@ int Cgi::exeScript(std::string path)
 	if (fileExtension == "py")
     	execlp("python3", "python3", path.c_str(), NULL);
 	else if (fileExtension == "sh")
-    	system(path.c_str());
+    	execvp(path.c_str(), const_cast<char**>(args));
+	else if (fileExtension == "out")
+    	execvp(path.c_str(), const_cast<char**>(args));
 	else
 		throw Cgi::ExecuteFileException();
 	
