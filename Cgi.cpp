@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 17:08:41 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:12:32 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int Cgi::exeScript(std::string path)
 	int result = chmod(path.c_str(), S_IRWXU);
     if (result != 0)
 	{
-        std::cerr << "Errore durante la modifica dei permessi del file" << std::endl;
+        std::cerr << "Errore nella modifica dei permessi" << std::endl;
         return 1;
     }
 	
