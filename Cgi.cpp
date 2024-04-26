@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 16:48:33 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:08:41 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,15 @@ int Cgi::exeScript(std::string path)
 {
     
 	std::string fileExtension = getFileExtension(path);
-		
+	
+	//mettere i permessi per eseguire i file 
+	int result = chmod(path.c_str(), S_IRWXU);
+    if (result != 0)
+	{
+        std::cerr << "Errore durante la modifica dei permessi del file" << std::endl;
+        return 1;
+    }
+	
     int outputFile = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
     if (outputFile == -1)
 	{
@@ -58,8 +66,8 @@ int Cgi::exeScript(std::string path)
 
 	if (fileExtension == "py")
     	execlp("python3", "python3", path.c_str(), NULL);
-	else if (fileExtension == "")
-    	execl("/bin", "ls", "-l", NULL);
+	else if (fileExtension == "sh")
+    	system(path.c_str());
 	else
 		throw Cgi::ExecuteFileException();
 	

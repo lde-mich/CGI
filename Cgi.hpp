@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:10:29 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 16:48:02 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:06:37 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <string>
 #include <cstdlib>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 class Cgi
@@ -36,7 +37,7 @@ class Cgi
             public:
                 virtual const char	*what() const throw()
 				{
-					return ("Error → execl failed");
+					return ("Error → exec failed");
 				};
         };
 	
