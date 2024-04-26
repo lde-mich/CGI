@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 16:21:52 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 16:48:33 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,8 @@ std::string Cgi::getFileExtension(const std::string& fileName)
 }
 
 
-int Cgi::exeScript()
+int Cgi::exeScript(std::string path)
 {
-	
-	// percorso del programma da eseguire
-   	std::string path = "/home/lde-mich/Desktop/42/CGI/codePython.py";
-	// std::string path = "/home/lde-mich/Desktop/42/CGI/ls";
     
 	std::string fileExtension = getFileExtension(path);
 		
@@ -63,7 +59,7 @@ int Cgi::exeScript()
 	if (fileExtension == "py")
     	execlp("python3", "python3", path.c_str(), NULL);
 	else if (fileExtension == "")
-    	execl("/bin/ls", "ls", "-l", NULL);
+    	execl("/bin", "ls", "-l", NULL);
 	else
 		throw Cgi::ExecuteFileException();
 	
