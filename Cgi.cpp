@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/29 16:32:20 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:21:02 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Cgi::~Cgi()
 	
 }
 
-// funzione trovare l'estensione del programma passato come argomento
+// funzione che trova l'estensione del programma passato come argomento
 std::string Cgi::getFileExtension(const std::string& fileName)
 {
     size_t dotPosition = fileName.find_last_of(".");
@@ -37,7 +37,26 @@ std::string Cgi::getFileExtension(const std::string& fileName)
 int Cgi::exeScript(std::string path)
 {
     pid_t pid = fork();
+    pid_t pid1 = fork();
     std::string fileExtension = getFileExtension(path);
+    
+    if (pid1 == -1)
+        throw Cgi::ForkException();
+    else if (pid1 == 0)
+    {
+        if (fileExtension == "c")
+        {
+            const char *ptr = std::strrchr(path.c_str(), '/');
+            int index = ptr - path.c_str();
+            
+            execl("/usr/bin/gcc", "gcc", path.c_str(), "-o", "a.out", NULL);
+
+            path = path.substr(0, index) + "a.out";
+            fileExtension = "out";
+            std::cout << "test " << path << std::endl;
+            std::cout << "test1 " << fileExtension << std::endl;
+        }
+    }
     
     //nullptr
     const char* args[] = {path.c_str(), NULL};
@@ -45,31 +64,22 @@ int Cgi::exeScript(std::string path)
     clock_t start_time = clock();
     
     if (pid == -1)
-        std::cerr << "Errore → processo figlio non creato" << std::endl;
+        throw Cgi::ForkException();
     else if (pid == 0)
     {
-                
+            
         //mettere i permessi per eseguire il file 
         int result = chmod(path.c_str(), S_IRWXU);
         if (result != 0)
-        {
-            std::cerr << "Errore → modifica dei permessi non effettuata" << std::endl;
-            return 1;
-        }
+            throw Cgi::PermissionFileException();
         
         int outputFile = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
         if (outputFile == -1)
-        {
-            std::cerr << "Errore → apertura file fallita" << std::endl;
-            return 1;
-        }
+            throw Cgi::OpenFileException();
         
         // Duplica il file descriptor per stdout
         if (dup2(outputFile, STDOUT_FILENO) == -1)
-        {
-            std::cerr << "dup2" << std::endl;
-            return 1;
-        }
+            throw Cgi::DupException();
         
         // Chiudi il file descriptor superfluo
         close(outputFile);
@@ -83,9 +93,9 @@ int Cgi::exeScript(std::string path)
             
     }
     
-    //gestire quanto tempo ci sta mettendo il processo figlio  ad eseguire il file se supera il tempo(in secondi) definito nella funzione stoppa il processo
+    //gestisce quanto tempo ci sta mettendo il processo figlio ad eseguire il file se supera il tempo(in secondi) definito nella funzione, stoppa il processo
     alarm(TIMEOUT);
-    //aspetta che finisca il processo figlio per poi continuare ad eseguire il processo padre
+    //aspetta che finisce il processo figlio per poi continuare ad eseguire il processo padre
     waitpid(pid, NULL, 0);
     //reset del tempo
     alarm(0);

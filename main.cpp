@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 11:17:07 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/29 16:36:37 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:21:42 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 int main ()
 {
-    Cgi test;
+    Cgi cgi;
 
     //TEST CLUSTER
     // std::string path = "/nfs/homes/lde-mich/Desktop/CGI/codePython.py";
-    std::string path = "/nfs/homes/lde-mich/Desktop/CGI/codeBash.sh";
-    // std::string path = "/nfs/homes/lde-mich/Desktop/CGI/a.out";
+    // std::string path = "/nfs/homes/lde-mich/Desktop/CGI/codeBash.sh";
+    std::string path = "/nfs/homes/lde-mich/Desktop/CGI/codeC.c";
     
     //TEST LAPTOP
     // std::string path = "/home/lde-mich/Desktop/42/CGI/codePython.py";
@@ -29,7 +29,7 @@ int main ()
     try
     {
         
-        test.exeScript(path);
+        cgi.exeScript(path);
         
     }
     catch(std::exception &e)
