@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 18:15:26 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:49:22 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ int Cgi::exeScript(std::string path)
 
 	if (fileExtension == "py")
     	execlp("python3", "python3", path.c_str(), NULL);
-	else if (fileExtension == "sh")
-    	execvp(path.c_str(), const_cast<char**>(args));
-	else if (fileExtension == "out")
+	else if (fileExtension == "sh" || fileExtension == "out")
     	execvp(path.c_str(), const_cast<char**>(args));
 	else
 		throw Cgi::ExecuteFileException();

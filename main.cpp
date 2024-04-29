@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 11:17:07 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 18:15:43 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/26 18:46:35 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 int main ()
 {
     Cgi test;
-    // std::string path = "/home/lde-mich/Desktop/42/CGI/codePython.py";
+    std::string path = "/home/lde-mich/Desktop/42/CGI/codePython.py";
     // std::string path = "/home/lde-mich/Desktop/42/CGI/codeBash.sh";
-    std::string path = "/home/lde-mich/Desktop/42/CGI/a.out";
+    // std::string path = "/home/lde-mich/Desktop/42/CGI/a.out";
     
     try
     {
