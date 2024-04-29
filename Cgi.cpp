@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/26 18:49:22 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/29 16:32:20 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,44 +36,64 @@ std::string Cgi::getFileExtension(const std::string& fileName)
 
 int Cgi::exeScript(std::string path)
 {
+    pid_t pid = fork();
+    std::string fileExtension = getFileExtension(path);
     
-	std::string fileExtension = getFileExtension(path);
-	
-	//nullptr
-	const char* args[] = {path.c_str(), NULL};
-	
-	//mettere i permessi per eseguire i file 
-	int result = chmod(path.c_str(), S_IRWXU);
-    if (result != 0)
-	{
-        std::cerr << "Errore nella modifica dei permessi" << std::endl;
-        return 1;
-    }
-	
-    int outputFile = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
-    if (outputFile == -1)
-	{
-        std::cerr << "open failed" << std::endl;
-        return 1;
+    //nullptr
+    const char* args[] = {path.c_str(), NULL};
+    
+    clock_t start_time = clock();
+    
+    if (pid == -1)
+        std::cerr << "Errore → processo figlio non creato" << std::endl;
+    else if (pid == 0)
+    {
+                
+        //mettere i permessi per eseguire il file 
+        int result = chmod(path.c_str(), S_IRWXU);
+        if (result != 0)
+        {
+            std::cerr << "Errore → modifica dei permessi non effettuata" << std::endl;
+            return 1;
+        }
+        
+        int outputFile = open("temp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU);
+        if (outputFile == -1)
+        {
+            std::cerr << "Errore → apertura file fallita" << std::endl;
+            return 1;
+        }
+        
+        // Duplica il file descriptor per stdout
+        if (dup2(outputFile, STDOUT_FILENO) == -1)
+        {
+            std::cerr << "dup2" << std::endl;
+            return 1;
+        }
+        
+        // Chiudi il file descriptor superfluo
+        close(outputFile);
+        
+        if (fileExtension == "py")
+            execlp("python3", "python3", path.c_str(), NULL);
+        else if (fileExtension == "sh" || fileExtension == "out")
+            execvp(path.c_str(), const_cast<char**>(args));
+        
+        throw Cgi::ExecuteFileException();
+            
     }
     
-    // Duplica il file descriptor per stdout
-    if (dup2(outputFile, STDOUT_FILENO) == -1)
-	{
-        std::cerr << "dup2" << std::endl;
-        return 1;
-    }
+    //gestire quanto tempo ci sta mettendo il processo figlio  ad eseguire il file se supera il tempo(in secondi) definito nella funzione stoppa il processo
+    alarm(TIMEOUT);
+    //aspetta che finisca il processo figlio per poi continuare ad eseguire il processo padre
+    waitpid(pid, NULL, 0);
+    //reset del tempo
+    alarm(0);
     
-    // Chiudi il file descriptor superfluo
-    close(outputFile);
-
-	if (fileExtension == "py")
-    	execlp("python3", "python3", path.c_str(), NULL);
-	else if (fileExtension == "sh" || fileExtension == "out")
-    	execvp(path.c_str(), const_cast<char**>(args));
-	else
-		throw Cgi::ExecuteFileException();
-	
+    clock_t end_time = clock();
+    double time = (double)(end_time - start_time) / CLOCKS_PER_SEC * 1000000; //millisecondi * 1000 -- microsecondi * 1000000
+    std::cout << "Fine programma in → " << time << " us" << std::endl;
+    
     return (0);
 }
 
