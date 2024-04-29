@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/29 18:29:12 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/30 00:29:48 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,27 +37,9 @@ std::string Cgi::getFileExtension(const std::string& fileName)
 int Cgi::exeScript(std::string path)
 {
     pid_t pid = fork();
-    pid_t pid1 = fork();
-    std::string fileExtension = getFileExtension(path);
-    
-    if (pid1 == -1)
-        throw Cgi::ForkException();
-    else if (pid1 == 0)
-    {
-        if (fileExtension == "c")
-        {
-            const char *ptr = std::strrchr(path.c_str(), '/');
-            int index = ptr - path.c_str();
-            
-            execl("/usr/bin/gcc", "gcc", path.c_str(), "-o", "a.out", NULL);
-            
-            path = path.substr(0, index + 1) + "a.out";
-            fileExtension = "out";
-            
 
-        }
-    }
-    
+    std::string fileExtension = getFileExtension(path);
+        
     //nullptr
     const char* args[] = {path.c_str(), NULL};
     
