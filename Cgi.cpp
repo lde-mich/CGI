@@ -6,7 +6,7 @@
 /*   By: lde-mich <lde-mich@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:09:51 by lde-mich          #+#    #+#             */
-/*   Updated: 2024/04/29 18:21:02 by lde-mich         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:29:12 by lde-mich         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ int Cgi::exeScript(std::string path)
             int index = ptr - path.c_str();
             
             execl("/usr/bin/gcc", "gcc", path.c_str(), "-o", "a.out", NULL);
-
-            path = path.substr(0, index) + "a.out";
+            
+            path = path.substr(0, index + 1) + "a.out";
             fileExtension = "out";
-            std::cout << "test " << path << std::endl;
-            std::cout << "test1 " << fileExtension << std::endl;
+            
+
         }
     }
     
